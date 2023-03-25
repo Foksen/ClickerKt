@@ -1,5 +1,6 @@
 package com.example.clickerkt
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,12 +19,34 @@ class MainFragment : Fragment() {
     ): View? {
         val binding = FragmentMainBinding.inflate(inflater, container, false)
 
-        binding.tvClicker.text = counter.toString()
-        binding.btnClicker.setOnClickListener { _ ->        // неиспользуемый аргумент обычно обозначают подчёркиванием
-            ++counter;
-            binding.tvClicker.text = counter.toString()
-        }      // лямбда(анонимная)-функция. Если лямбда одна, можно без круглых скобок
+        with(binding) {     // Чтобы каждый раз не писать binding, можно использовать конструкцию с with (умный компилятор поймёт куда вставлять)
+
+            tvClicker.text = counter.toString()         // без with пришлость бы писать binding.tvClicker
+            layout.setBackgroundColor(Color.parseColor(BackgroundColor.RED.color))
+
+            btnClicker.setOnClickListener { _ ->        // неиспользуемый аргумент обычно обозначают подчёркиванием
+                ++counter;
+                tvClicker.text = counter.toString()
+                layout.setBackgroundColor(
+                    Color.parseColor(
+                        when (counter % 3) {
+                            0 -> BackgroundColor.RED.color
+                            1 -> BackgroundColor.GREEN.color
+                            2 -> BackgroundColor.BLUE.color
+                            else -> null
+                        }
+                    )
+                )
+            }      // лямбда(анонимная)-функция. Если лямбда одна, можно без круглых скобок
+
+        }
 
         return binding.root
     }
+}
+
+enum class BackgroundColor(val color: String) {
+    RED("#FF0000"),
+    GREEN("#00FF00"),
+    BLUE("#0000FF")
 }
